@@ -1,5 +1,5 @@
 import express from "express";
-app.use("/api/therapists", therapistRoutes);
+
 import protectRoute from "../middlewares/protectRoute.js";
 import {
   createAppointment,
