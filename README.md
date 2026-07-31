@@ -1,4 +1,4 @@
-# 🧠 Jeevanta – Your Friendly Digital Health Buddy 
+#  Jeevanta – Your Friendly Digital Health Buddy 
 
 > “Jeevanta hai toh sab kuch hai!”  
 > A full-stack AI-powered healthcare app built with  using the MERN stack.
