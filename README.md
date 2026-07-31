@@ -73,6 +73,3 @@ Jeevanta helps users book appointments, manage health records, talk to AI, and e
 
 ---
 
-
-![Image 7](https://drive.google.com/uc?export=view&id=1b_HmplaparjdNhY22dTrqcCiQeUAQfwh)
-![Image 8](https://drive.google.com/uc?export=view&id=1kPAcQYNktA2Gq051icMeALyW4xd6Tm2B)
