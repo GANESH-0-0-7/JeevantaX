@@ -443,10 +443,10 @@ export default function VaultPage() {
         <div className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
 
           <img
-            src={vaultImg}
-            alt="Secure Vault"
-            className="w-full h-64 object-cover"
-          />
+    src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1200"
+    alt="Secure Vault"
+    className="w-full h-64 object-cover rounded-t-3xl"
+/>
 
           <div className="p-8">
 
