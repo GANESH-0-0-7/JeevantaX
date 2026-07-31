@@ -21,25 +21,33 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// CORS
+// =======================
+// CORS Configuration
+// =======================
 
 const allowedOrigins = [
-  "http://localhost:5173",
-  "https://your-vercel-app.vercel.app"
+  "http://localhost:5173", // Local Development
+  process.env.CLIENT_URL,  // Vercel Frontend
 ];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
+    origin: (origin, callback) => {
+      // Allow Postman/mobile apps (no origin)
+      if (!origin) {
+        return callback(null, true);
       }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
   })
 );
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRoutes);
@@ -52,7 +60,10 @@ app.get("/", (req, res) => {
   res.send("JeevantaX Backend is Running...");
 });
 
+// =======================
 // Server Start
+// =======================
+
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
@@ -60,11 +71,12 @@ const startServer = async () => {
     await connectDB();
 
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-      console.log(" MongoDB Connected Successfully");
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log("✅ MongoDB Connected Successfully");
+      console.log("🌐 Allowed Origin:", process.env.CLIENT_URL);
     });
   } catch (error) {
-    console.error("Failed to start server");
+    console.error("❌ Failed to start server");
     console.error(error);
     process.exit(1);
   }
