@@ -1,39 +1,47 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+});
 
 export const gemini = async (description) => {
   try {
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-    });
 
     const prompt = `
-You are an advanced medical assistant.
-
-Given the patient's symptoms, return ONLY the medical specialization needed.
-
-Examples:
-- chest pain and shortness of breath -> Cardiology
-- skin rashes and itching -> Dermatology
-
-Choose ONLY one of these:
-Cardiology, Dermatology, Pediatrics, Neurology, Orthopedics, Psychiatry, Radiology, Oncology.
-
-If none match, return:
-General Medicine
+Return ONLY one specialization.
 
 Symptoms:
+
 ${description}
+
+Choose one:
+
+Cardiology
+Dermatology
+Neurology
+Orthopedics
+Psychiatry
+Pediatrics
+Radiology
+Oncology
+General Medicine
 `;
 
-    const result = await model.generateContent(prompt);
-    return result.response.text().trim();
+    const response = await ai.models.generateContent({
+  model: "gemini-3.6-flash",
+  contents: prompt,
+});
+
+    return response.text.trim();
+
   } catch (error) {
-    console.error("Gemini Error:", error);
+
+    console.error(error);
+
     return "General Medicine";
   }
 };

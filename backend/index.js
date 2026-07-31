@@ -10,6 +10,7 @@ import aiRoutes from "./routes/ai.route.js";
 import appointmentRoutes from "./routes/appointment.route.js";
 import listRoutes from "./routes/list.route.js";
 import vaultRoutes from "./routes/vault.route.js";
+import "./telegramBot.js";
 
 // Load environment variables
 dotenv.config();

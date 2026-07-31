@@ -3,7 +3,7 @@ import { useAppointmentStore } from '../store/appointment.store.js'
 import Spinner from '../components/Spinner'
 import { FaCheckCircle, FaHourglassHalf, FaClipboardCheck } from 'react-icons/fa'
 import { FaStar } from 'react-icons/fa'
-
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 const PatientDashboard = () => {
   const { appointments, loading, err, fetchAppointments } = useAppointmentStore()
   const [tab, setTab] = useState('current')
@@ -52,34 +52,40 @@ const PatientDashboard = () => {
   const pastAppointments = appointments.filter(a => a.status === 'completed');
 
   const handleRate = async (appointmentId, rating) => {
-    setSubmitting(true);
-    try {
-      const res = await fetch('http://localhost:5000/api/appointment/rate', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ appointmentId, rating }),
-      });
-      let data;
-      try {
-        data = await res.json();
-      } catch {
-        data = { message: 'Invalid server response' };
-      }
-      if (res.ok) {
-        setRatingState((prev) => ({ ...prev, [appointmentId]: rating }));
-        fetchAppointments();
-      } else {
-        alert(data.message || 'Failed to rate');
-      }
-    } catch (e) {
-      alert('Failed to rate');
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  setSubmitting(true);
 
+  try {
+    const res = await fetch(`${API}/api/appointment/rate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        appointmentId,
+        rating,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      setRatingState((prev) => ({
+        ...prev,
+        [appointmentId]: rating,
+      }));
+
+      fetchAppointments();
+    } else {
+      alert(data.message || "Failed to rate");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Failed to rate");
+  } finally {
+    setSubmitting(false);
+  }
+};
   return (
     <div className="min-h-[calc(100vh-5rem)] flex items-stretch bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 py-6 md:py-8 px-2 md:px-4">
       <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
