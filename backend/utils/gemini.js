@@ -1,21 +1,39 @@
-import {GoogleGenerativeAI} from "@google/generative-ai";
-import dotenv from "dotenv"
-dotenv.config()
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from "dotenv";
 
-const genAI=new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
+dotenv.config();
 
-export const gemini=async(description)=>{
-    const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-flash" });
-    const prompt=`You are a advanced medical assistant. Given the patient symptoms, return the relevant medical specialization doctor needed to treat it. responsd with just one word-the spcialization nothig else. For example:
-    -> "chest pain and shortness of breath" -> "Cardiologist"
-    -> "Skin rashing and itching" -> "Dermatologist"
-    Always choose from the following options only:
-    Cardiology , Dermatology , Pediatrics, Neurology, Orthopedics, Psychiatry, Radiology, Oncology. If its none of this , then return : General Medicine
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-    Symptoms:"${description}"
-    `
+export const gemini = async (description) => {
+  try {
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash",
+    });
 
-    const result=await model.generateContent(prompt)
-    const response=await result.response
-    return response.text().trim()
-}
+    const prompt = `
+You are an advanced medical assistant.
+
+Given the patient's symptoms, return ONLY the medical specialization needed.
+
+Examples:
+- chest pain and shortness of breath -> Cardiology
+- skin rashes and itching -> Dermatology
+
+Choose ONLY one of these:
+Cardiology, Dermatology, Pediatrics, Neurology, Orthopedics, Psychiatry, Radiology, Oncology.
+
+If none match, return:
+General Medicine
+
+Symptoms:
+${description}
+`;
+
+    const result = await model.generateContent(prompt);
+    return result.response.text().trim();
+  } catch (error) {
+    console.error("Gemini Error:", error);
+    return "General Medicine";
+  }
+};
