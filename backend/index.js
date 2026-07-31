@@ -10,12 +10,20 @@ import aiRoutes from "./routes/ai.route.js";
 import appointmentRoutes from "./routes/appointment.route.js";
 import listRoutes from "./routes/list.route.js";
 import vaultRoutes from "./routes/vault.route.js";
+import therapistRoutes from "./routes/therapistRoutes.js";
+
 import "./telegramBot.js";
 
-// Load environment variables
+// =======================
+// Load Environment Variables
+// =======================
+
 dotenv.config();
 
-// Create Express app
+// =======================
+// Create Express App
+// =======================
+
 const app = express();
 
 // =======================
@@ -42,7 +50,7 @@ app.use(
     origin: (origin, callback) => {
       console.log("📥 Incoming Origin:", origin);
 
-      // Allow Postman, curl, mobile apps
+      // Allow requests without Origin (Postman, curl, mobile apps)
       if (!origin) {
         return callback(null, true);
       }
@@ -53,10 +61,21 @@ app.use(
       }
 
       console.log("❌ Origin Blocked:", origin);
-      callback(new Error("Not allowed by CORS"));
+
+      return callback(new Error("Not allowed by CORS"));
     },
+
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+
+    methods: [
+      "GET",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS",
+    ],
+
     allowedHeaders: [
       "Content-Type",
       "Authorization",
@@ -66,14 +85,21 @@ app.use(
 );
 
 // =======================
-// Routes
+// API Routes
 // =======================
 
 app.use("/api/auth", authRoutes);
+
 app.use("/api/ai", aiRoutes);
+
 app.use("/api/appointment", appointmentRoutes);
+
 app.use("/api/list", listRoutes);
+
 app.use("/api/vault", vaultRoutes);
+
+// ✅ New Therapist Route
+app.use("/api/therapists", therapistRoutes);
 
 // =======================
 // Home Route

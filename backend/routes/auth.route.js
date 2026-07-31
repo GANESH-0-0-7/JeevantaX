@@ -1,4 +1,5 @@
 import express from "express"
+app.use("/api/therapists", therapistRoutes);
 import {checkAuth, login, logout, signup } from "../controllers/auth.controller.js"
 import protectRoute from "../middlewares/protectRoute.js"
 const router=express.Router()
