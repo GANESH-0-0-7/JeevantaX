@@ -50,7 +50,7 @@ app.use(
     origin: (origin, callback) => {
       console.log("📥 Incoming Origin:", origin);
 
-      // Allow requests without Origin (Postman, curl, mobile apps)
+      // Allow Postman, curl, mobile apps
       if (!origin) {
         return callback(null, true);
       }
@@ -61,12 +61,9 @@ app.use(
       }
 
       console.log("❌ Origin Blocked:", origin);
-
       return callback(new Error("Not allowed by CORS"));
     },
-
     credentials: true,
-
     methods: [
       "GET",
       "POST",
@@ -75,7 +72,6 @@ app.use(
       "DELETE",
       "OPTIONS",
     ],
-
     allowedHeaders: [
       "Content-Type",
       "Authorization",
@@ -89,17 +85,24 @@ app.use(
 // =======================
 
 app.use("/api/auth", authRoutes);
-
 app.use("/api/ai", aiRoutes);
-
 app.use("/api/appointment", appointmentRoutes);
-
 app.use("/api/list", listRoutes);
-
 app.use("/api/vault", vaultRoutes);
 
-// ✅ New Therapist Route
+// ✅ Therapist Route
 app.use("/api/therapists", therapistRoutes);
+
+// =======================
+// Test Route
+// =======================
+
+app.get("/api/test", (req, res) => {
+  res.json({
+    success: true,
+    message: "Backend is working!",
+  });
+});
 
 // =======================
 // Home Route
