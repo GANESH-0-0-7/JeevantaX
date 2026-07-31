@@ -41,7 +41,7 @@ app.use(
     origin: (origin, callback) => {
       console.log("📥 Incoming Origin:", origin);
 
-      // Allow Postman, curl, mobile apps, etc.
+      // Allow Postman, curl, mobile apps
       if (!origin) {
         return callback(null, true);
       }
@@ -52,11 +52,15 @@ app.use(
       }
 
       console.log("❌ Origin Blocked:", origin);
-      return callback(new Error("Not allowed by CORS"));
+      callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+    ],
   })
 );
 
