@@ -40,8 +40,8 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   "http://localhost:5173",
-  process.env.CLIENT_URL,
-].filter(Boolean);
+  "https://jeevanta-x-alpha.vercel.app",
+];
 
 console.log("🌐 Allowed Origins:", allowedOrigins);
 
@@ -56,14 +56,18 @@ app.use(
       }
 
       if (allowedOrigins.includes(origin)) {
-        console.log("✅ Origin Allowed");
+        console.log("✅ Origin Allowed:", origin);
         return callback(null, true);
       }
 
       console.log("❌ Origin Blocked:", origin);
+      console.log("Allowed Origins:", allowedOrigins);
+
       return callback(new Error("Not allowed by CORS"));
     },
+
     credentials: true,
+
     methods: [
       "GET",
       "POST",
@@ -72,6 +76,7 @@ app.use(
       "DELETE",
       "OPTIONS",
     ],
+
     allowedHeaders: [
       "Content-Type",
       "Authorization",
@@ -79,6 +84,9 @@ app.use(
     ],
   })
 );
+
+// Handle preflight requests
+app.options("*", cors());
 
 // =======================
 // API Routes
@@ -89,8 +97,6 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/appointment", appointmentRoutes);
 app.use("/api/list", listRoutes);
 app.use("/api/vault", vaultRoutes);
-
-// ✅ Therapist Route
 app.use("/api/therapists", therapistRoutes);
 
 // =======================
@@ -101,6 +107,14 @@ app.get("/api/test", (req, res) => {
   res.json({
     success: true,
     message: "Backend is working!",
+  });
+});
+
+// Debug Route
+app.get("/api/debug", (req, res) => {
+  res.json({
+    origin: req.headers.origin,
+    allowedOrigins,
   });
 });
 
@@ -125,7 +139,6 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log("✅ MongoDB Connected Successfully");
-      console.log("🌐 CLIENT_URL:", process.env.CLIENT_URL);
     });
   } catch (error) {
     console.error("❌ Failed to start server");
